@@ -1,3 +1,4 @@
+const { query } = require("express");
 const express = require("express");
 const mongoose = require("mongoose");
 
@@ -51,7 +52,47 @@ app.get('/', (req, res) => {
 })
 
 
+//get all products
+app.get('/products',async (req, res) => {
 
+try {
+    const products = await Product.find();
+
+    if(products){
+        res.status(200).send(products)
+    }
+    else{
+        res.status(400).send("There was no products");
+    }
+} catch (error) {
+    res.status(500).send({message: error.message});
+}
+})
+
+
+
+//get single  products
+app.get('/products/:id',async (req, res) => {
+
+    try {
+        const id = req.params.id;
+        const products = await Product.findOne({_id: id}) 
+    
+        if(products){
+            res.status(200).send({
+                data: products
+            })
+        }
+        else{
+            res.status(400).send("There was no products");
+        }
+    } catch (error) {
+        res.status(500).send({message: error.message});
+    }
+    })
+    
+
+//post products 
 app.post("/products", async (req,res)=>{
     try{
  //get data from req body 
